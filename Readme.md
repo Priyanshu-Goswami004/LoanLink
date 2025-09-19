@@ -133,3 +133,5 @@ For questions, support, or collaboration opportunities, please reach out through
 
 
 ##Contract Deatils - 0xf0ed7Ce341A10E68456E807171014C8E29b19b2D
+<img width="1918" height="750" alt="Screenshot 2025-09-19 063442" src="https://github.com/user-attachments/assets/d1b090de-873c-402f-9ca3-474270a72f2e" />
+
