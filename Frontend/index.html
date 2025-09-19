@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DecentralizedVoting - Blockchain Democracy</title>
+    <title>Supply Chain Tracking System</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>🗳️ DecentralizedVoting</h1>
-            <p>Transparent • Secure • Immutable</p>
+            <div class="header-content">
+                <h1>📦 Supply Chain Tracker</h1>
+                <p>Transparent • Secure • Traceable</p>
+            </div>
             <div class="wallet-section">
                 <button id="connectWallet" class="btn btn-primary">Connect Wallet</button>
                 <div id="walletInfo" class="wallet-info hidden">
@@ -22,80 +24,181 @@
         </div>
     </header>
 
+    <nav class="nav-tabs">
+        <div class="container">
+            <button class="tab-btn active" data-tab="add-product">Add Product</button>
+            <button class="tab-btn" data-tab="update-status">Update Status</button>
+            <button class="tab-btn" data-tab="verify-product">Verify Product</button>
+            <button class="tab-btn" data-tab="admin-panel">Admin</button>
+        </div>
+    </nav>
+
     <main class="container">
-        <!-- Create Proposal Section -->
-        <section class="card">
-            <h2>📝 Create New Proposal</h2>
-            <form id="createProposalForm">
-                <div class="form-group">
-                    <label for="proposalTitle">Proposal Title:</label>
-                    <input type="text" id="proposalTitle" required placeholder="Enter proposal title...">
-                </div>
-                <div class="form-group">
-                    <label for="proposalDescription">Description:</label>
-                    <textarea id="proposalDescription" required placeholder="Describe your proposal in detail..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="votingDuration">Voting Duration (minutes):</label>
-                    <input type="number" id="votingDuration" min="1" required placeholder="e.g., 60">
-                </div>
-                <button type="submit" class="btn btn-success">Create Proposal</button>
-            </form>
-        </section>
-
-        <!-- Active Proposals Section -->
-        <section class="card">
-            <h2>🔥 Active Proposals</h2>
-            <button id="refreshProposals" class="btn btn-secondary">Refresh Proposals</button>
-            <div id="proposalsList" class="proposals-container">
-                <div class="loading">Loading proposals...</div>
-            </div>
-        </section>
-
-        <!-- Proposal Results Section -->
-        <section class="card">
-            <h2>📊 Proposal Results</h2>
-            <div class="form-group">
-                <label for="proposalIdInput">Enter Proposal ID:</label>
-                <div class="input-group">
-                    <input type="number" id="proposalIdInput" min="1" placeholder="e.g., 1">
-                    <button id="getResults" class="btn btn-info">Get Results</button>
-                </div>
-            </div>
-            <div id="resultsContainer" class="results-container hidden">
-                <div class="result-card">
-                    <h3 id="resultTitle"></h3>
-                    <p id="resultDescription"></p>
-                    <div class="vote-stats">
-                        <div class="vote-count yes-votes">
-                            <span class="vote-label">Yes Votes:</span>
-                            <span id="yesVotes" class="vote-number">0</span>
-                        </div>
-                        <div class="vote-count no-votes">
-                            <span class="vote-label">No Votes:</span>
-                            <span id="noVotes" class="vote-number">0</span>
-                        </div>
+        <!-- Add Product Tab -->
+        <section id="add-product" class="tab-content active">
+            <div class="card">
+                <h2>🏭 Add New Product</h2>
+                <p class="card-description">Register a new product in the supply chain system</p>
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label for="productName">Product Name:</label>
+                        <input type="text" id="productName" required placeholder="e.g., Premium Coffee Beans">
                     </div>
-                    <div class="proposal-meta">
-                        <p><strong>Creator:</strong> <span id="resultCreator"></span></p>
-                        <p><strong>End Time:</strong> <span id="resultEndTime"></span></p>
-                        <p><strong>Status:</strong> <span id="resultStatus"></span></p>
+                    <div class="form-group">
+                        <label for="productDescription">Description:</label>
+                        <textarea id="productDescription" required placeholder="Detailed product description..."></textarea>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="manufacturingLocation">Manufacturing Location:</label>
+                        <input type="text" id="manufacturingLocation" required placeholder="e.g., Factory A, Mumbai, India">
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Price (in Wei):</label>
+                        <input type="number" id="productPrice" required placeholder="1000000000000000000" min="1">
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Product</button>
+                </form>
             </div>
         </section>
 
-        <!-- Admin Section (visible only to contract owner) -->
-        <section id="adminSection" class="card admin-section hidden">
-            <h2>👑 Admin Panel</h2>
-            <div class="admin-controls">
-                <h3>Register New Voter</h3>
+        <!-- Update Status Tab -->
+        <section id="update-status" class="tab-content">
+            <div class="card">
+                <h2>🚚 Update Product Status</h2>
+                <p class="card-description">Update the location and status of products in transit</p>
+                <form id="updateStatusForm">
+                    <div class="form-group">
+                        <label for="statusProductId">Product ID:</label>
+                        <input type="number" id="statusProductId" required min="1" placeholder="e.g., 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="newStatus">New Status:</label>
+                        <select id="newStatus" required>
+                            <option value="">Select Status</option>
+                            <option value="0">Manufactured</option>
+                            <option value="1">In Transit</option>
+                            <option value="2">Delivered</option>
+                            <option value="3">Sold</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentLocation">Current Location:</label>
+                        <input type="text" id="currentLocation" required placeholder="e.g., Warehouse B, Delhi">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateNotes">Notes:</label>
+                        <textarea id="updateNotes" placeholder="Additional information about this update..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Update Status</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Verify Product Tab -->
+        <section id="verify-product" class="tab-content">
+            <div class="card">
+                <h2>🔍 Verify Product Authenticity</h2>
+                <p class="card-description">Check product authenticity and view complete tracking history</p>
                 <div class="form-group">
-                    <label for="voterAddress">Voter Address:</label>
+                    <label for="verifyProductId">Product ID:</label>
                     <div class="input-group">
-                        <input type="text" id="voterAddress" placeholder="0x...">
-                        <button id="registerVoter" class="btn btn-warning">Register Voter</button>
+                        <input type="number" id="verifyProductId" min="1" placeholder="Enter Product ID">
+                        <button id="verifyBtn" class="btn btn-info">Verify</button>
                     </div>
+                </div>
+                
+                <div id="productInfo" class="product-info hidden">
+                    <div class="authenticity-status">
+                        <div id="authenticityBadge" class="authenticity-badge">
+                            <span id="authenticityText">Authentic</span>
+                            <div id="authenticityIcon">✓</div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-details">
+                        <h3 id="productInfoName"></h3>
+                        <p id="productInfoDescription"></p>
+                        
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <strong>Manufacturer:</strong>
+                                <span id="productManufacturer"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Manufacturing Date:</strong>
+                                <span id="manufacturingDate"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Current Status:</strong>
+                                <span id="currentStatus" class="status-badge"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Current Location:</strong>
+                                <span id="productCurrentLocation"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Price:</strong>
+                                <span id="productInfoPrice"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Current Owner:</strong>
+                                <span id="currentOwner"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-history">
+                        <h4>📋 Tracking History</h4>
+                        <button id="loadHistoryBtn" class="btn btn-secondary">Load Complete History</button>
+                        <div id="historyContainer" class="history-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Panel Tab -->
+        <section id="admin-panel" class="tab-content">
+            <div id="adminSection" class="card admin-card">
+                <h2>👑 Administrator Panel</h2>
+                <p class="card-description">Manage system access and user permissions</p>
+                
+                <div class="admin-controls">
+                    <div class="admin-section">
+                        <h3>Authorize Manufacturer</h3>
+                        <div class="form-group">
+                            <label for="manufacturerAddress">Manufacturer Address:</label>
+                            <div class="input-group">
+                                <input type="text" id="manufacturerAddress" placeholder="0x...">
+                                <button id="authorizeManufacturer" class="btn btn-success">Authorize</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h3>Authorize Logistics Provider</h3>
+                        <div class="form-group">
+                            <label for="logisticsAddress">Logistics Provider Address:</label>
+                            <div class="input-group">
+                                <input type="text" id="logisticsAddress" placeholder="0x...">
+                                <button id="authorizeLogistics" class="btn btn-warning">Authorize</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h3>Emergency Controls</h3>
+                        <div class="form-group">
+                            <label for="counterfeitProductId">Mark as Counterfeit:</label>
+                            <div class="input-group">
+                                <input type="number" id="counterfeitProductId" placeholder="Product ID" min="1">
+                                <button id="markCounterfeit" class="btn btn-danger">Mark Counterfeit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="nonAdminMessage" class="non-admin-message hidden">
+                    <p>⚠️ Administrative functions are only available to the contract owner.</p>
                 </div>
             </div>
         </section>
@@ -105,23 +208,13 @@
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="loading-spinner">
             <div class="spinner"></div>
-            <p>Processing transaction...</p>
+            <p>Processing blockchain transaction...</p>
         </div>
     </div>
 
     <!-- Notification System -->
     <div id="notification" class="notification hidden">
-        <span id="notificationMessage"></span>
-        <button id="closeNotification" class="close-btn">&times;</button>
-    </div>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 DecentralizedVoting. Built with ❤️ for transparency and democracy.</p>
-            <p>Powered by Ethereum blockchain technology</p>
-        </div>
-    </footer>
-
-    <script src="app.js"></script>
-</body>
-</html>
+        <div class="notification-content">
+            <span id="notificationMessage"></span>
+            <button id="closeNotification" class="close-btn">&times;</button>
+        </div
